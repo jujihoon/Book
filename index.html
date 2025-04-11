@@ -22,9 +22,17 @@
 
     .container {
       position: relative;
-      width: 80%;
+      width: 60%;
       height: 80%;
       perspective: 1000px; /* 3D 효과 */
+    }
+
+    .book {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 1.5s ease; /* 페이지 넘기는 효과 */
     }
 
     .page {
@@ -39,7 +47,7 @@
       justify-content: center;
       align-items: center;
       backface-visibility: hidden; /* 뒷면이 보이지 않게 */
-      transition: transform 1.5s ease; /* 페이지 넘기는 효과 */
+      transition: transform 1.5s ease;
     }
 
     .page-back {
@@ -88,11 +96,16 @@
 <body>
 
   <div class="container">
-    <div class="page" id="page1">
-      <div class="book-message" id="message">THE BOOK</div>
-    </div>
-    <div class="page page-back" id="page2">
-      <div class="book-message" id="message2">새로운 페이지!</div>
+    <div class="book" id="book">
+      <!-- 첫 페이지 -->
+      <div class="page" id="page1">
+        <div class="book-message" id="message">THE BOOK</div>
+      </div>
+      
+      <!-- 두 번째 페이지 -->
+      <div class="page page-back" id="page2">
+        <div class="book-message" id="message2">새로운 페이지!</div>
+      </div>
     </div>
   </div>
 
@@ -103,9 +116,7 @@
     let isPageFlipped = false; // 페이지가 뒤집혔는지 여부
 
     function turnPage() {
-      // 페이지가 이미 뒤집혔으면 회전하지 않게 막음
-      if (isPageFlipped) return;
-
+      const book = document.getElementById("book");
       const page1 = document.getElementById("page1");
       const page2 = document.getElementById("page2");
       const message = document.getElementById("message");
@@ -126,12 +137,15 @@
       message.innerText = randomMessage;
       document.getElementById("message2").innerText = randomMessage;
 
-      // 페이지 넘기기 효과
-      page1.style.transform = "rotateY(-180deg)";
-      page2.style.transform = "rotateY(0deg)";
+      if (!isPageFlipped) {
+        // 페이지 넘기기 효과
+        book.style.transform = "rotateY(-180deg)"; // 책 전체 회전
+        page1.style.transform = "rotateY(-180deg)";
+        page2.style.transform = "rotateY(0deg)";
 
-      // 페이지 뒤집힌 상태로 설정
-      isPageFlipped = true;
+        // 페이지 뒤집힌 상태로 설정
+        isPageFlipped = true;
+      }
     }
   </script>
 </body>
