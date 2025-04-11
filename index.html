@@ -11,67 +11,40 @@
       text-align: center;
       font-size: 2rem;
       font-family: 'Georgia', serif;
-      margin-top: 5%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .book-container {
-      display: inline-block;
-      perspective: 1000px;
-      margin-bottom: 20px;
-    }
-
-    .book {
-      width: 300px;
-      height: 400px;
+    .container {
       position: relative;
-      transform-style: preserve-3d;
-      transition: transform 1s ease;
-      border: 5px solid #4b3621;
-      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5), 0px 0px 15px #4b3621;
+      width: 80%;
+      height: 80%;
+      perspective: 1000px; /* 3D 효과 */
     }
 
-    .book.flip {
-      transform: rotateY(180deg);
-    }
-
-    .book-face {
-      position: absolute;
+    .page {
       width: 100%;
       height: 100%;
-      backface-visibility: hidden;
-    }
-
-    .front {
-      background-color: #000;
-      background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-      background-blend-mode: overlay;
-    }
-
-    .back {
-      background-color: #000;
-      color: #f0e4d7;
-      transform: rotateY(180deg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .dirt {
-      position: absolute;
       background-color: #4b3621;
-      opacity: 0.8;
-      border-radius: 50%;
-      filter: blur(2px);
+      color: #f0e4d7;
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backface-visibility: hidden; /* 뒷면이 보이지 않게 */
+      transition: transform 1.5s ease; /* 페이지 넘기는 효과 */
     }
 
-    .dirt1 { width: 50px; height: 20px; top: 30px; left: 80px; }
-    .dirt2 { width: 30px; height: 15px; top: 150px; left: 200px; }
-    .dirt3 { width: 70px; height: 25px; top: 250px; left: 50px; }
-    .dirt4 { width: 40px; height: 20px; top: 320px; left: 180px; }
-    .dirt5 { width: 60px; height: 30px; top: 100px; left: 30px; }
+    .page-back {
+      transform: rotateY(180deg); /* 뒤 페이지는 반대로 회전 */
+    }
 
     button {
       background-color: #8b5a2b;
@@ -87,36 +60,52 @@
       background-color: #a67c52;
       color: #fff;
     }
+
+    .book-message {
+      position: absolute;
+      color: #f0e4d7;
+      font-size: 2rem;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .dirt {
+      position: absolute;
+      background-color: #4b3621;
+      opacity: 0.8;
+      border-radius: 50%;
+      filter: blur(2px);
+    }
+
+    /* 흙 얼룩 위치 */
+    .dirt1 { width: 50px; height: 20px; top: 30px; left: 80px; }
+    .dirt2 { width: 30px; height: 15px; top: 150px; left: 200px; }
+    .dirt3 { width: 70px; height: 25px; top: 250px; left: 50px; }
+    .dirt4 { width: 40px; height: 20px; top: 320px; left: 180px; }
+    .dirt5 { width: 60px; height: 30px; top: 100px; left: 30px; }
   </style>
 </head>
 <body>
 
-  <div class="book-container">
-    <div class="book" id="book">
-      <!-- 앞면 -->
-      <div class="book-face front">
-        <div class="dirt dirt1"></div>
-        <div class="dirt dirt2"></div>
-        <div class="dirt dirt3"></div>
-        <div class="dirt dirt4"></div>
-        <div class="dirt dirt5"></div>
-      </div>
-
-      <!-- 뒷면 -->
-      <div class="book-face back" id="message">
-        THE BOOK
-      </div>
+  <div class="container">
+    <div class="page" id="page1">
+      <div class="book-message" id="message">THE BOOK</div>
+    </div>
+    <div class="page page-back" id="page2">
+      <div class="book-message" id="message2">새로운 페이지!</div>
     </div>
   </div>
 
   <br>
-  <button onclick="flipBook()">펼쳐서 확인하기</button>
+  <button onclick="turnPage()">펼쳐서 확인하기</button>
 
   <script>
-    function flipBook() {
-      const book = document.getElementById("book");
-      const message = document.getElementById("message");
+    let isPageFlipped = false; // 페이지가 뒤집혔는지 여부
 
+    function turnPage() {
+      const page1 = document.getElementById("page1");
+      const page2 = document.getElementById("page2");
+      const message = document.getElementById("message");
       const messages = [
         "어", "아니", "아래 버튼을 8번 더 눌러봐", "?", "몰라", "ㅋ",
         "다시 생각해봐.", "그래", "어쩌면 맞을지도 몰라.", "비밀이야.",
@@ -132,8 +121,21 @@
 
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
       message.innerText = randomMessage;
+      document.getElementById("message2").innerText = randomMessage;
 
-      book.classList.toggle("flip");
+      // 페이지 넘기기 효과
+      if (isPageFlipped) {
+        // 이미 페이지가 뒤집혔으면, 다시 원래대로
+        page1.style.transform = "rotateY(0deg)";
+        page2.style.transform = "rotateY(180deg)";
+      } else {
+        // 페이지가 안 뒤집혔으면, 뒤집기
+        page1.style.transform = "rotateY(-180deg)";
+        page2.style.transform = "rotateY(0deg)";
+      }
+
+      // 상태 토글
+      isPageFlipped = !isPageFlipped;
     }
   </script>
 </body>
