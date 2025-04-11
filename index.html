@@ -5,41 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE BOOK</title>
     <style>
+        /* 전체 페이지 스타일 */
         body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             background-color: #3a2c29; /* 어두운 갈색 배경 */
-            color: #f0e4d7; /* 크림색 텍스트 */
-            text-align: center;
-            font-size: 2rem;
-            font-family: 'Georgia', serif; /* 고서 느낌 폰트 */
-            margin-top: 5%;
+            font-family: 'Georgia', serif;
+            color: #f0e4d7;
+            overflow: hidden;
         }
 
         /* 책 스타일 */
-        .book-container {
-            display: inline-block;
-            perspective: 800px; /* 3D 원근감 */
-            margin-bottom: 20px;
-        }
-
         .book {
-            width: 300px;
-            height: 400px;
+            width: 80vw; /* 책 너비 */
+            height: 90vh; /* 책 높이 */
             background-color: #000; /* 검정 책 */
-            position: relative;
+            border: 10px solid #3a2c29; /* 테두리 */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5), 0px 0px 15px #3a2c29; /* 흙 느낌 */
             transform-style: preserve-3d;
             transform: rotateY(0deg);
-            animation: openBook 2s ease-in-out forwards;
-            border: 5px solid #3a2c29; /* 흙 느낌 테두리 */
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5), 0px 0px 15px #3a2c29; /* 흙 느낌 */
+            position: relative;
         }
 
-        @keyframes openBook {
-            0% {
-                transform: rotateY(0deg); /* 닫힌 상태 */
-            }
-            100% {
-                transform: rotateY(-120deg); /* 펼쳐진 상태 */
-            }
+        /* 책 페이지 스타일 */
+        .page {
+            flex: 1;
+            padding: 20px;
+            background-color: #f0e4d7; /* 페이지 색상 */
+            overflow: auto;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .page-content {
+            opacity: 1;
+            transition: opacity 1s ease-in-out; /* 페이드 효과 (1초) */
         }
 
         /* 흙 얼룩 스타일 */
@@ -73,11 +78,6 @@
             left: 50px;
         }
 
-        #message {
-            transition: opacity 2s ease-in-out; /* 페이드 효과 */
-            opacity: 1;
-        }
-
         button {
             background-color: #8b5a2b; /* 갈색 버튼 */
             color: #f0e4d7; /* 크림색 텍스트 */
@@ -86,6 +86,7 @@
             font-size: 1.5rem;
             cursor: pointer;
             font-family: 'Georgia', serif;
+            margin-top: 20px;
         }
 
         button:hover {
@@ -95,24 +96,28 @@
     </style>
 </head>
 <body>
-    <div class="book-container">
-        <div class="book">
-            <!-- 흙 얼룩 추가 -->
-            <div class="dirt dirt1"></div>
-            <div class="dirt dirt2"></div>
-            <div class="dirt dirt3"></div>
-        </div>
-    </div>
 
-    <p id="message">T̶͉̲͕͍̘̊͗͋͆͒͂͛͘H̶̟̭͚̟͑̆̔̍͑͘͘ͅË̸͕̫͔͙̟́͐̐̆̈́̓̈́ ̷̩̩̞͜͝B̸͓͓̗̮͙͆̎̓̀͑O̸͓̩̠͓̥̔̔̍̿̒̐͐̽͘Ȯ̸͓̝̩̣̼́̓̽̑̈͗̚K̷͎͙̳̞̣̂̑͒̆</p>
-    <button onclick="showRandomMessage()">펼쳐서 확인하기</button>
+    <div class="book">
+        <div class="page">
+            <!-- 페이지 내용 -->
+            <div class="page-content" id="message">
+                T̶͉̲͕͍̘̊͗͋͆͒͂͛͘H̶̟̭͚̟͑̆̔̍͑͘͘ͅË̸͕̫͔͙̟́͐̐̆̈́̓̈́ ̷̩̩̞͜͝B̸͓͓̗̮͙͆̎̓̀͑O̸͓̩̠͓̥̔̔̍̿̒̐͐̽͘Ȯ̸͓̝̩̣̼́̓̽̑̈͗̚K̷͎͙̳̞̣̂̑͒̆
+            </div>
+            <button onclick="showRandomMessage()">펼쳐서 확인하기</button>
+        </div>
+        <!-- 흙 얼룩 추가 -->
+        <div class="dirt dirt1"></div>
+        <div class="dirt dirt2"></div>
+        <div class="dirt dirt3"></div>
+    </div>
 
     <script>
         function showRandomMessage() {
-            // 메시지를 변경하기 전에 opacity를 0으로 설정하여 페이드 아웃
-            document.getElementById("message").style.opacity = 0;
+            // 페이지 내용을 변경하기 전에 opacity를 0으로 설정하여 페이드 아웃
+            const messageElement = document.getElementById("message");
+            messageElement.style.opacity = 0;
 
-            // 2초 후에 새로운 메시지로 업데이트하고 opacity를 다시 1로 설정하여 페이드 인
+            // 1초 후에 새로운 메시지로 업데이트하고 opacity를 다시 1로 설정하여 페이드 인
             setTimeout(function() {
                 const messages = [
                     "어",
@@ -176,13 +181,13 @@
                     "그건 정말로 깊이 고민해야 해.",
                     "그냥 운에 맡겨야 할지도 몰라."
                 ];
-                document.getElementById("message").innerText = 
-                    messages[Math.floor(Math.random() * messages.length)];
+                messageElement.innerText = messages[Math.floor(Math.random() * messages.length)];
 
                 // 메시지를 업데이트한 후 opacity를 1로 설정하여 페이드 인
-                document.getElementById("message").style.opacity = 1;
-            }, 2000); // 2초 후에 메시지 변경
+                messageElement.style.opacity = 1;
+            }, 1000); // 1초 후에 메시지 변경
         }
     </script>
+
 </body>
 </html>
