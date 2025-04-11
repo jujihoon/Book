@@ -103,6 +103,9 @@
     let isPageFlipped = false; // 페이지가 뒤집혔는지 여부
 
     function turnPage() {
+      // 페이지가 이미 뒤집혔으면 회전하지 않게 막음
+      if (isPageFlipped) return;
+
       const page1 = document.getElementById("page1");
       const page2 = document.getElementById("page2");
       const message = document.getElementById("message");
@@ -124,18 +127,11 @@
       document.getElementById("message2").innerText = randomMessage;
 
       // 페이지 넘기기 효과
-      if (isPageFlipped) {
-        // 이미 페이지가 뒤집혔으면, 다시 원래대로
-        page1.style.transform = "rotateY(0deg)";
-        page2.style.transform = "rotateY(180deg)";
-      } else {
-        // 페이지가 안 뒤집혔으면, 뒤집기
-        page1.style.transform = "rotateY(-180deg)";
-        page2.style.transform = "rotateY(0deg)";
-      }
+      page1.style.transform = "rotateY(-180deg)";
+      page2.style.transform = "rotateY(0deg)";
 
-      // 상태 토글
-      isPageFlipped = !isPageFlipped;
+      // 페이지 뒤집힌 상태로 설정
+      isPageFlipped = true;
     }
   </script>
 </body>
